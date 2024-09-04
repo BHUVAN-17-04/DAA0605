@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <math.h>
+
+double masterTheorem(int n) {
+
+
+    double log_b_a = log2(2);  // log_b(a)
+    double f_n = n;            // f(n) = n
+
+    if (f_n == pow(n, log_b_a)) {
+        return n * log2(n);    // T(n) = Θ(n log n)
+    }
+    return 0.0;
+}
+
+int main() {
+    int n = 10; // Example input
+    double result = masterTheorem(n);
+    printf("The time complexity T(n) using Master Theorem is Θ(n log n)\n");
+    return 0;
+}
+
+SUBSTITUTION METHOD
+
+#include <stdio.h>
+
+int main() {
+    printf("Using Substitution Method, the time complexity T(n) is O(n log n)\n");
+    return 0;
+}
+
+ITERATION METHOD
+
+#include <stdio.h>
+#include <math.h>
+
+void printIteration(int n) {
+    int k = 0;
+    int current_n = n;
+    int total = 0;
+
+    printf("Expanding T(n) through iteration:\n");
+    while (current_n > 1) {
+        printf("Iteration %d: T(%d) = 2^%d * T(%d) + %d\n", k, n, k, current_n, total);
+        total += n;
+        current_n /= 2;
+        k++;
+    }
+    printf("Final term: T(%d) = 2^%d * T(1) + %d\n", n, k, total);
+    printf("The time complexity T(n) through iteration is Θ(n log n)\n");
+}
+
+int main() {
+    int n = 8; // Example input
+    printIteration(n);
+    return 0;
+}
+
+
+
