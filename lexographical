@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+void dfs(int node, int* visited, int* component, int* index, int** pairs, int pairsSize) {
+    visited[node] = 1;
+    component[(*index)++] = node;
+    for (int i = 0; i < pairsSize; i++) {
+        if (pairs[i][0] == node && !visited[pairs[i][1]]) {
+            dfs(pairs[i][1], visited, component, index, pairs, pairsSize);
+        } else if (pairs[i][1] == node && !visited[pairs[i][0]]) {
+            dfs(pairs[i][0], visited, component, index, pairs, pairsSize);
+        }
+    }
+}
+
+char* smallestStringWithSwaps(char* s, int** pairs, int pairsSize, int* pairsColSize) {
+    int n = strlen(s);
+    int visited[n];
+    memset(visited, 0, sizeof(visited));
+    char* result = (char*)malloc(n + 1);
+    strcpy(result, s);
+    
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            int component[n];
+            int index = 0;
+            dfs(i, visited, component, &index, pairs, pairsSize);
+            
+            char temp[index];
+            for (int j = 0; j < index; j++) {
+                temp[j] = result[component[j]];
+            }
+            qsort(temp, index, sizeof(char), (int(*)(const void*, const void*))strcmp);
+            for (int j = 0; j < index; j++) {
+                result[component[j]] = temp[j];
+            }
+        }
+    }
+    
+    result[n] = '\0';
+    return result;
+}
+
+int main() {
+    char s[] = "dcab";
+    int* pairs[2];
+    int pair1[] = {0, 3};
+    int pair2[] = {1, 2};
+    pairs[0] = pair1;
+    pairs[1] = pair2;
+    int pairsColSize[] = {2, 2};
+    
+    char* result = smallestStringWithSwaps(s, pairs, 2, pairsColSize);
+    printf("%s\n", result);
+    free(result);
+    return 0;
+}
