@@ -1,0 +1,59 @@
+# Closest pair of points using divide and conquer
+
+import math
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+def distance(p1, p2):
+    return math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2)
+
+def brute_force(points, n):
+    min_dist = float('inf')
+    pair = None
+    for i in range(n):
+        for j in range(i + 1, n):
+            dist = distance(points[i], points[j])
+            if dist < min_dist:
+                min_dist = dist
+                pair = (points[i], points[j])
+    return min_dist, pair
+
+def strip_closest(strip, size, d):
+    min_dist = d
+    pair = None
+    for i in range(size):
+        for j in range(i + 1, size):
+            if abs(strip[i].y - strip[j].y) < min_dist:
+                dist = distance(strip[i], strip[j])
+                if dist < min_dist:
+                    min_dist = dist
+                    pair = (strip[i], strip[j])
+    return min_dist, pair
+
+def closest_util(points, n):
+    if n <= 3:
+        return brute_force(points, n)
+
+    mid = n // 2
+    mid_point = points[mid]
+
+    dl, pair_left = closest_util(points[:mid], mid)
+    dr, pair_right = closest_util(points[mid:], n - mid)
+
+    d = min(dl, dr)
+    pair = pair_left if d == dl else pair_right
+
+    strip = [p for p in points if abs(p.x - mid_point.x) < d]
+    return min((d, pair), strip_closest(strip, len(strip), d))
+
+def closest_pair(points):
+    points.sort(key=lambda p: p.x)
+    return closest_util(points, len(points))
+
+# Example usage
+points = [Point(0, 0), Point(1, 1), Point(2, 2), Point(3, 3)]
+min_dist, pair = closest_pair(points)
+print(f"The closest pair is: ({pair[0].x}, {pair[0].y}) and ({pair[1].x}, {pair[1].y}) with a distance of {min_dist}")
