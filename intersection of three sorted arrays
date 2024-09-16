@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to find the intersection of three sorted arrays
+int* intersectionOfThreeArrays(int* arr1, int arr1Size, int* arr2, int arr2Size, int* arr3, int arr3Size, int* returnSize) {
+    int* result = (int*)malloc(sizeof(int) * (arr1Size < arr2Size ? (arr1Size < arr3Size ? arr1Size : arr3Size) : (arr2Size < arr3Size ? arr2Size : arr3Size)));
+    int i = 0, j = 0, k = 0;
+    int index = 0;
+    
+    while (i < arr1Size && j < arr2Size && k < arr3Size) {
+        if (arr1[i] == arr2[j] && arr2[j] == arr3[k]) {
+            // Found common element
+            result[index++] = arr1[i];
+            // Move all pointers
+            i++;
+            j++;
+            k++;
+        } else if (arr1[i] < arr2[j]) {
+            // arr1[i] is too small
+            i++;
+        } else if (arr2[j] < arr3[k]) {
+            // arr2[j] is too small
+            j++;
+        } else {
+            // arr3[k] is too small
+            k++;
+        }
+    }
+    
+    *returnSize = index;
+    return result;
+}
+
+// Function to print an array
+void printArray(int* array, int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", array[i]);
+    }
+    printf("\n");
+}
+
+// Main function to test the implementation
+int main() {
+    int arr1[] = {1, 2, 3, 4, 5};
+    int arr2[] = {1, 2, 5, 7, 9};
+    int arr3[] = {1, 3, 4, 5, 8};
+    
+    int arr1Size = sizeof(arr1) / sizeof(arr1[0]);
+    int arr2Size = sizeof(arr2) / sizeof(arr2[0]);
+    int arr3Size = sizeof(arr3) / sizeof(arr3[0]);
+    
+    int returnSize;
+    int* result = intersectionOfThreeArrays(arr1, arr1Size, arr2, arr2Size, arr3, arr3Size, &returnSize);
+    
+    printf("Intersection of the three arrays: ");
+    printArray(result, returnSize);
+    
+    // Free the allocated memory
+    free(result);
+    
+    return 0;
+}
