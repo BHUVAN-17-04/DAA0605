@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+struct CharFreq {
+    char character;
+    int frequency;
+};
+
+int compare(const void *a, const void *b) {
+    return ((struct CharFreq *)b)->frequency - ((struct CharFreq *)a)->frequency;
+}
+
+char* frequencySort(char* s) {
+    int len = strlen(s);
+    struct CharFreq freq[256] = {0};
+    
+    for (int i = 0; i < len; i++) {
+        freq[s[i]].character = s[i];
+        freq[s[i]].frequency++;
+    }
+    
+    int count = 0;
+    for (int i = 0; i < 256; i++) {
+        if (freq[i].frequency > 0) {
+            count++;
+        }
+    }
+    
+    qsort(freq, 256, sizeof(struct CharFreq), compare);
+    
+    char *result = (char *)malloc(len + 1);
+    int index = 0;
+    
+    for (int i = 0; i < 256; i++) {
+        if (freq[i].frequency > 0) {
+            for (int j = 0; j < freq[i].frequency; j++) {
+                result[index++] = freq[i].character;
+            }
+        }
+    }
+    
+    result[index] = '\0';
+    return result;
+}
+
+int main() {
+    char s[] = "tree";
+    char *sortedString = frequencySort(s);
+    printf("%s\n", sortedString);
+    free(sortedString);
+    return 0;
+}
