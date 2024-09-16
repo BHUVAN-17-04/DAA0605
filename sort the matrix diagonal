@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to sort a diagonal
+void sortDiagonal(int* diagonal, int size) {
+    // Simple insertion sort for demonstration; could be replaced with a more efficient sort
+    for (int i = 1; i < size; i++) {
+        int key = diagonal[i];
+        int j = i - 1;
+        while (j >= 0 && diagonal[j] > key) {
+            diagonal[j + 1] = diagonal[j];
+            j--;
+        }
+        diagonal[j + 1] = key;
+    }
+}
+
+// Function to extract diagonal into an array
+int* extractDiagonal(int** mat, int row, int col, int m, int n, int* size) {
+    int* diagonal = (int*)malloc((m > n ? m : n) * sizeof(int));
+    *size = 0;
+    
+    while (row < m && col < n) {
+        diagonal[*size] = mat[row][col];
+        (*size)++;
+        row++;
+        col++;
+    }
+    
+    return diagonal;
+}
+
+// Function to place sorted diagonal back into the matrix
+void placeDiagonal(int** mat, int row, int col, int* diagonal, int size) {
+    int index = 0;
+    
+    while (row < m && col < n) {
+        mat[row][col] = diagonal[index++];
+        row++;
+        col++;
+    }
+}
+
+// Main function to sort all diagonals
+void diagonalSort(int** mat, int m, int n) {
+    for (int i = 0; i < m; i++) {
+        int size;
+        int* diagonal = extractDiagonal(mat, i, 0, m, n, &size);
+        sortDiagonal(diagonal, size);
+        placeDiagonal(mat, i, 0, diagonal, size);
+        free(diagonal);
+    }
+    
+    for (int j = 1; j < n; j++) {
+        int size;
+        int* diagonal = extractDiagonal(mat, 0, j, m, n, &size);
+        sortDiagonal(diagonal, size);
+        placeDiagonal(mat, 0, j, diagonal, size);
+        free(diagonal);
+    }
+}
+
+// Function to print the matrix
+void printMatrix(int** mat, int m, int n) {
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Helper function to create a matrix (for tes
