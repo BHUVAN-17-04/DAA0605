@@ -1,0 +1,48 @@
+#include <stdio.h>
+
+void sortColors(int* nums, int numsSize) {
+    int p0 = 0;       // Pointer for the next 0
+    int p2 = numsSize - 1;  // Pointer for the next 2
+    int i = 0;        // Current pointer
+    
+    while (i <= p2) {
+        if (nums[i] == 0) {
+            // Swap nums[i] and nums[p0], increment both p0 and i
+            int temp = nums[i];
+            nums[i] = nums[p0];
+            nums[p0] = temp;
+            p0++;
+            i++;
+        } else if (nums[i] == 1) {
+            i++;
+        } else {  // nums[i] == 2
+            // Swap nums[i] and nums[p2], decrement p2
+            int temp = nums[i];
+            nums[i] = nums[p2];
+            nums[p2] = temp;
+            p2--;
+        }
+    }
+}
+
+void printArray(int* nums, int numsSize) {
+    for (int i = 0; i < numsSize; i++) {
+        printf("%d ", nums[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int nums[] = {2, 0, 2, 1, 1, 0};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+
+    printf("Original array: ");
+    printArray(nums, numsSize);
+
+    sortColors(nums, numsSize);
+
+    printf("Sorted array: ");
+    printArray(nums, numsSize);
+
+    return 0;
+}
