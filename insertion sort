@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for singly-linked list.
+struct ListNode {
+    int val;
+    struct ListNode *next;
+};
+
+// Function to create a new ListNode
+struct ListNode* createNode(int value) {
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    newNode->val = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to print the linked list
+void printList(struct ListNode* head) {
+    struct ListNode* temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->val);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Function to sort the linked list using insertion sort
+struct ListNode* insertionSortList(struct ListNode* head) {
+    if (head == NULL) {
+        return NULL;
+    }
+
+    // Dummy node to simplify insertions
+    struct ListNode* dummy = createNode(0);
+    dummy->next = head;
+
+    // Pointers for the current node to be inserted and the sorted list
+    struct ListNode* current = head;
+    while (current != NULL && current->next != NULL) {
+        if (current->val <= current->next->val) {
+            // No need to insert, move to the next node
+            current = current->next;
+        } else {
+            // Need to insert current->next into the sorted part
+            struct ListNode* toInsert = current->next;
+            current->next = toInsert->next; // Remove toInsert from the list
+
+            // Find the correct position to insert
+            struct ListNode* pos = dummy;
+            while (pos->next != NULL && pos->next->val < toInsert->val) {
+                pos = pos->next;
+            }
+            // Insert toInsert into the sorted part
+            toInsert->next = pos->next;
+            pos->next = toInsert;
+        }
+    }
+
+    // Get the sorted list starting from the node after dummy
+    struct ListNode* sortedHead = dummy->next;
+    free(dummy); // Free the dummy node
+
+    return sortedHead;
+}
+
+// Main function to test the insertion sort
+int main() {
+    // Create the linked list: 4 -> 2 -> 1 -> 3
+    struct ListNode* head = createNode(4);
+    head->next = createNode(2);
+    head->next->next = createNode(1);
+    head->next->next->next = createNode(3);
+
+    printf("Original list: ");
+    printList(head);
+
+    // Sort the linked list
+    struct ListNode* sortedHead = insertionSortList(head);
+
+    printf("Sorted list: ");
+    printList(sortedHead);
+
+    // Free the allocated memory
+    while (sortedHead != NULL) {
+        struct ListNode* temp = sortedHead;
+        sortedHead = sortedHead->next;
+        free(temp);
+    }
+
+    return 0;
+}
