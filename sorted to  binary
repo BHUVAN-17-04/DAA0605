@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Function to create a new tree node
+struct TreeNode* createNode(int value) {
+    struct TreeNode* newNode = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    newNode->val = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Recursive function to convert sorted array to height-balanced BST
+struct TreeNode* sortedArrayToBSTHelper(int* nums, int left, int right) {
+    if (left > right) {
+        return NULL;
+    }
+    
+    // Find the middle index
+    int mid = left + (right - left) / 2;
+    
+    // Create the root node with the middle element
+    struct TreeNode* root = createNode(nums[mid]);
+    
+    // Recursively build the left and right subtrees
+    root->left = sortedArrayToBSTHelper(nums, left, mid - 1);
+    root->right = sortedArrayToBSTHelper(nums, mid + 1, right);
+    
+    return root;
+}
+
+// Wrapper function to call the helper function
+struct TreeNode* sortedArrayToBST(int* nums, int numsSize) {
+    return sortedArrayToBSTHelper(nums, 0, numsSize - 1);
+}
+
+// Helper function to print the tree in-order (for testing)
+void printInOrder(struct TreeNode* root) {
+    if (root == NULL) {
+        return;
+    }
+    printInOrder(root->left);
+    printf("%d ", root->val);
+    printInOrder(root->right);
+}
+
+// Helper function to free the tree nodes
+void freeTree(struct TreeNode* root) {
+    if (root == NULL) {
+        return;
+    }
+    freeTree(root->left);
+    freeTree(root->right);
+    free(root);
+}
+
+// Main function to test the conversion
+int main() {
+    int nums[] = {-10, -3, 0, 5, 9};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+    
+    struct TreeNode* root = sortedArrayToBST(nums, numsSize);
+    
+    printf("In-order traversal of the BST: ");
+    printInOrder(root);
+    printf("\n");
+    
+    // Free the allocated memory
+    freeTree(root);
+    
+    return 0;
+}
