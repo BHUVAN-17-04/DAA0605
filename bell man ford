@@ -1,0 +1,27 @@
+def catMouseGame(graph):
+    n = len(graph)
+    # 0: hole, 1: mouse, 2: cat
+    # dp[turn][mouse][cat] = result
+    dp = [[[0] * n for _ in range(n)] for _ in range(2 * n)]
+    
+    for turn in range(2 * n - 1, -1, -1):
+        for mouse in range(n):
+            for cat in range(n):
+                if mouse == cat:
+                    dp[turn][mouse][cat] = 2  # Cat wins
+                elif mouse == 0:
+                    dp[turn][mouse][cat] = 1  # Mouse wins
+                elif turn % 2 == 0:  # Mouse's turn
+                    dp[turn][mouse][cat] = 2  # Assume cat wins
+                    for next_mouse in graph[mouse]:
+                        if dp[turn + 1][next_mouse][cat] == 1:
+                            dp[turn][mouse][cat] = 1  # Mouse can win
+                            break
+                else:  
+                    dp[turn][mouse][cat] = 1  # Assume mouse wins
+                    for next_cat in graph[cat]:
+                        if next_cat != 0 and dp[turn + 1][mouse][next_cat] == 2:
+                            dp[turn][mouse][cat] = 2  # Cat can win
+                            break
+
+    return dp[0][1][2]
