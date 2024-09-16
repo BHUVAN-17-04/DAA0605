@@ -1,0 +1,39 @@
+def maxDifference(num):
+    num_str = str(num)
+    
+    max_num = num_str
+    min_num = num_str
+    
+    def replace_digits(number_str, x, y):
+        return number_str.replace(x, y)
+    
+    most_freq_digit = max(set(num_str), key=num_str.count)
+    max_num = replace_digits(num_str, most_freq_digit, '9')
+    
+    if '0' in num_str:
+        non_zero_digits = set(num_str) - {'0'}
+        if non_zero_digits:
+            min_digit = min(non_zero_digits, key=num_str.count)
+        else:
+            min_digit = most_freq_digit
+    else:
+        min_digit = most_freq_digit
+    
+    if min_digit == '0':
+        non_zero_digits = set(num_str) - {'0'}
+        min_digit = min(non_zero_digits, key=num_str.count)
+        min_num = replace_digits(num_str, min_digit, '0')
+        min_num = replace_digits(min_num, '0', '1')
+    else:
+        min_num = replace_digits(num_str, min_digit, '0')
+    
+    if min_num == '':
+        min_num = num_str
+        
+    max_num = int(max_num)
+    min_num = int(min_num)
+    
+    return max_num - min_num
+
+print(maxDifference(555))  # Output: 888
+print(maxDifference(9))    # Output: 8
