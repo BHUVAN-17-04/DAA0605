@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int maxChunksToSorted(int* arr, int arrSize) {
+    int maxSoFar = -1; // Initialize to a value smaller than the smallest possible element
+    int chunkCount = 0;
+    
+    for (int i = 0; i < arrSize; ++i) {
+        if (arr[i] > maxSoFar) {
+            maxSoFar = arr[i];
+        }
+        
+        // If the maximum value seen so far equals the current index
+        if (maxSoFar == i) {
+            chunkCount++;
+        }
+    }
+    
+    return chunkCount;
+}
+
+// Main function to test the implementation
+int main() {
+    int arr[] = {4, 3, 2, 1, 0};
+    int arrSize = sizeof(arr) / sizeof(arr[0]);
+    
+    int result = maxChunksToSorted(arr, arrSize);
+    printf("The maximum number of chunks is: %d\n", result);
+    
+    return 0;
+}
