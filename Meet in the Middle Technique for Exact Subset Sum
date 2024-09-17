@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_SIZE 1000
+
+void generateSubsetSums(int arr[], int n, int *sums, int *count) {
+    int totalSubsets = 1 << n;
+    for (int i = 0; i < totalSubsets; i++) {
+        int sum = 0;
+        for (int j = 0; j < n; j++) {
+            if (i & (1 << j)) {
+                sum += arr[j];
+            }
+        }
+        sums[(*count)++] = sum;
+    }
+}
+
+int checkExactSum(int *sums1, int size1, int *sums2, int size2, int target) {
+    for (int i = 0; i < size1; i++) {
+        for (int j = 0; j < size2; j++) {
+            if (sums1[i] + sums2[j] == target) {
+                return 1; // True, exact sum found
+            }
+        }
+    }
+    return 0; // False, exact sum not found
+}
+
+int main() {
+    int set1[] = {1, 3, 9, 2, 7, 12};
+    int set2[] = {3, 34, 4, 12, 5, 2};
+    int target1 = 15;
+    int target2 = 15;
+
+    int n1 = sizeof(set1) / sizeof(set1[0]);
+    int n2 = sizeof(set2) / sizeof(set2[0]);
+
+    int mid1 = n1 / 2;
+    int mid2 = n2 / 2;
+
+    int sums1[MAX_SIZE], sums2[MAX_SIZE];
+    int count1 = 0, count2 = 0;
+
+    generateSubsetSums(set1, mid1, sums1, &count1);
+    generateSubsetSums(set1 + mid1, n1 - mid1, sums2, &count2);
+    int found1 = checkExactSum(sums1, count1, sums2, count2, target1);
+
+    generateSubsetSums(set2, mid2, sums1, &count1);
+    generateSubsetSums(set2 + mid2, n2 - mid2, sums2, &count2);
+    int found2 = checkExactSum(sums1, count1, sums2, count2, target2);
+
+    printf("Subset with exact sum %d exists: %s\n", target1, found1 ? "Yes" : "No");
+    printf("Subset with exact sum %d exists: %s\n", target2, found2 ? "Yes" : "No");
+
+    return 0;
+}
