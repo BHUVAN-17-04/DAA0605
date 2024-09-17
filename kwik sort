@@ -1,0 +1,54 @@
+#include <stdio.h>
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[low];
+    int left = low + 1;
+    int right = high;
+    while (left <= right) {
+        while (left <= right && arr[left] <= pivot) left++;
+        while (left <= right && arr[right] > pivot) right--;
+        if (left < right) swap(&arr[left], &arr[right]);
+    }
+    swap(&arr[low], &arr[right]);
+    return right;
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pivotIndex = partition(arr, low, high);
+        quickSort(arr, low, pivotIndex - 1);
+        quickSort(arr, pivotIndex + 1, high);
+    }
+}
+
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int arr1[] = {10, 16, 8, 12, 15, 6, 3, 9, 5};
+    int n1 = sizeof(arr1) / sizeof(arr1[0]);
+    quickSort(arr1, 0, n1 - 1);
+    printArray(arr1, n1);
+
+    int arr2[] = {12, 4, 78, 23, 45, 67, 89, 1};
+    int n2 = sizeof(arr2) / sizeof(arr2[0]);
+    quickSort(arr2, 0, n2 - 1);
+    printArray(arr2);
+
+    int arr3[] = {38, 27, 43, 3, 9, 82, 10};
+    int n3 = sizeof(arr3) / sizeof(arr3[0]);
+    quickSort(arr3, 0, n3 - 1);
+    printArray(arr3);
+
+    return 0;
+}
