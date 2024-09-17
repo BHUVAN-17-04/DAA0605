@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void combinationSumUtil(int* candidates, int candidatesSize, int target, int* combination, int start, int combinationSize, int** result, int* returnSize, int* returnColumnSizes) {
+    if (target == 0) {
+        result[*returnSize] = (int*)malloc(combinationSize * sizeof(int));
+        for (int i = 0; i < combinationSize; i++) {
+            result[*returnSize][i] = combination[i];
+        }
+        returnColumnSizes[*returnSize] = combinationSize;
+        (*returnSize)++;
+        return;
+    }
+    for (int i = start; i < candidatesSize; i++) {
+        if (candidates[i] > target) continue;
+        combination[combinationSize] = candidates[i];
+        combinationSumUtil(candidates, candidatesSize, target - candidates[i], combination, i, combinationSize + 1, result, returnSize, returnColumnSizes);
+    }
+}
+
+int** combinationSum(int* candidates, int candidatesSize, int target, int* returnSize, int** returnColumnSizes) {
+    int** result = (int**)malloc(150 * sizeof(int*));
+    int* combination = (int*)malloc(target * sizeof(int));
+    *returnSize = 0;
+    *returnColumnSizes = (int*)malloc(150 * sizeof(int));
+    combinationSumUtil(candidates, candidatesSize, target, combination, 0, 0, result, returnSize, *returnColumnSizes);
+    free(combination);
+    return result;
+}
+
+int main() {
+    int candidates[] = {2, 3, 6, 7};
+    int target = 7;
+    int returnSize;
+    int* returnColumnSizes;
+    int** result = combinationSum(candidates, sizeof(candidates) / sizeof(candidates[0]), target, &returnSize, &returnColumnSizes);
+
+    for (int i = 0; i < returnSize; i++) {
+        for (int j = 0; j < returnColumnSizes[i]; j++) {
+            printf("%d ", result[i][j]);
+        }
+        printf("\n");
+        free(result[i]);
+    }
+    free(result);
+    free(returnColumnSizes);
+
+    return 0;
+}
