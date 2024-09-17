@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <math.h>
+
+#define MAX_SIZE 1000
+
+void generateSubsetSums(int arr[], int n, int *sums, int *count) {
+    int totalSubsets = 1 << n;
+    for (int i = 0; i < totalSubsets; i++) {
+        int sum = 0;
+        for (int j = 0; j < n; j++) {
+            if (i & (1 << j)) {
+                sum += arr[j];
+            }
+        }
+        sums[(*count)++] = sum;
+    }
+}
+
+int findClosestSum(int *sums1, int size1, int *sums2, int size2, int target) {
+    int closest = INT_MAX;
+    for (int i = 0; i < size1; i++) {
+        for (int j = 0; j < size2; j++) {
+            int currentSum = sums1[i] + sums2[j];
+            if (abs(currentSum - target) < abs(closest - target)) {
+                closest = currentSum;
+            }
+        }
+    }
+    return closest;
+}
+
+int main() {
+    int set1[] = {45, 34, 4, 12, 5, 2};
+    int set2[] = {1, 3, 2, 7, 4, 6};
+    int target1 = 42;
+    int target2 = 10;
+
+    int n1 = sizeof(set1) / sizeof(set1[0]);
+    int n2 = sizeof(set2) / sizeof(set2[0]);
+
+    int mid1 = n1 / 2;
+    int mid2 = n2 / 2;
+
+    int sums1[MAX_SIZE], sums2[MAX_SIZE];
+    int count1 = 0, count2 = 0;
+
+    generateSubsetSums(set1, mid1, sums1, &count1);
+    generateSubsetSums(set1 + mid1, n1 - mid1, sums2, &count2);
+    int closestSum1 = findClosestSum(sums1, count1, sums2, count2, target1);
+
+    generateSubsetSums(set2, mid2, sums1, &count1);
+    generateSubsetSums(set2 + mid2, n2 - mid2, sums2, &count2);
+    int closestSum2 = findClosestSum(sums1, count1, sums2, count2, target2);
+
+    printf("Closest sum to %d is %d\n", target1, closestSum1);
+    printf("Closest sum to %d is %d\n", target2, closestSum2);
+
+    return 0;
+}
