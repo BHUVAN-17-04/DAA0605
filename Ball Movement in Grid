@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+#define MAX_M 50
+#define MAX_N 50
+
+int dp[MAX_M][MAX_N][101];
+
+int numWays(int m, int n, int N, int i, int j) {
+    if (i < 0 || i >= m || j < 0 || j >= n) return 1;
+    if (N == 0) return 0;
+    if (dp[i][j][N] != -1) return dp[i][j][N];
+
+    int ways = 0;
+    ways += numWays(m, n, N - 1, i - 1, j);
+    ways += numWays(m, n, N - 1, i + 1, j);
+    ways += numWays(m, n, N - 1, i, j - 1);
+    ways += numWays(m, n, N - 1, i, j + 1);
+
+    return dp[i][j][N] = ways;
+}
+
+int main() {
+    int m1 = 2, n1 = 2, N1 = 2, i1 = 0, j1 = 0;
+    int m2 = 1, n2 = 3, N2 = 3, i2 = 0, j2 = 1;
+
+    for (int m = 0; m < MAX_M; m++)
+        for (int n = 0; n < MAX_N; n++)
+            for (int N = 0; N <= 100; N++)
+                dp[m][n][N] = -1;
+
+    printf("Number of ways (m=%d, n=%d, N=%d, i=%d, j=%d): %d\n", m1, n1, N1, i1, j1, numWays(m1, n1, N1, i1, j1));
+    printf("Number of ways (m=%d, n=%d, N=%d, i=%d, j=%d): %d\n", m2,
