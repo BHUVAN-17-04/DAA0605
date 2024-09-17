@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define MAX_POINTS 1000
+
+typedef struct {
+    int x, y;
+} Point;
+
+int compare(const void *a, const void *b) {
+    Point *pointA = (Point *)a;
+    Point *pointB = (Point *)b;
+    return (pointA->x * pointA->x + pointA->y * pointA->y) - (pointB->x * pointB->x + pointB->y * pointB->y);
+}
+
+void closestPoints(Point points[], int n, int k) {
+    qsort(points, n, sizeof(Point), compare);
+    printf("[");
+    for (int i = 0; i < k; i++) {
+        if (i > 0) printf(", ");
+        printf("[%d, %d]", points[i].x, points[i].y);
+    }
+    printf("]\n");
+}
+
+int main() {
+    Point points1[] = {{1, 3}, {-2, 2}, {5, 8}, {0, 1}};
+    Point points2[] = {{1, 3}, {-2, 2}};
+    Point points3[] = {{3, 3}, {5, -1}, {-2, 4}};
+    
+    int k1 = 2;
+    int k2 = 1;
+    int k3 = 2;
+
+    closestPoints(points1, sizeof(points1) / sizeof(points1[0]), k1);
+    closestPoints(points2, sizeof(points2) / sizeof(points2[0]), k2);
+    closestPoints(points3, sizeof(points3) / sizeof(points3[0]), k3);
+
+    return 0;
+}
