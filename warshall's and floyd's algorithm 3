@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_NODES 10001
+
+typedef struct {
+    int node;
+    int time;
+} Edge;
+
+typedef struct {
+    Edge edges[MAX_NODES];
+    int size;
+} MinHeap;
+
+void insert(MinHeap* heap, int node, int time) {
+    heap->edges[heap->size].node = node;
+    heap->edges[heap->size].time = time;
+    int i = heap->size++;
+    while (i > 0 && heap->edges[i].time < heap->edges[(i - 1) / 2].time) {
+        Edge temp = heap->edges[i];
+        heap->edges[i] = heap->edges[(i - 1) / 2];
+        heap->edges[(i - 1) / 2] = temp;
+        i = (i - 1) / 2;
+    }
+}
+
+Edge extractMin(MinHeap* heap) {
+    Edge min = heap->edges[0];
+    heap->edges[0] = heap->edges[--heap->size];
+    int i = 0;
+    while (i * 2 + 1 < heap->size) {
+        int smallest = i * 2 + 1;
+        if (smallest + 1 < heap->size && heap->edges[smallest + 1].time < heap->edges[smallest].time) {
+            smallest++;
+        }
+        if (heap->edges[i].time <= heap->edges[smallest].time) break;
+        Edge temp = heap->edges[i];
+        heap->edges[i] = heap->edges[smallest];
+        heap->edges[smallest] = temp;
+        i = smallest;
+    }
+    return min;
+}
+
+int networkDelayTime(int** times, int timesSize, int* timesColSize, int n, int k) {
+    int dist[MAX_NODES];
+    for (int i = 1; i <= n; i++) dist[i] = INT_MAX;
+    dist[k] = 0;
+
+    MinHeap heap = { .size = 0 };
+    insert(&heap, k, 0);
+
+    while (heap.size > 0) {
+        Edge current = extractMin(&heap);
+        int u = current.node;
+
+        for (int i = 0; i < timesSize; i++) {
+            if (times[i][0] == u) {
+                int v = times[i][1];
+                int w = times[i][2];
+                if (dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    insert(&heap, v, dist[v]);
+                }
+            }
+        }
+    }
+
+    int maxTime = 0;
+    for (int i = 1; i <= n; i++) {
+        if (dist[i] == INT_MAX) return -1;
+        if (dist[i] > maxTime) maxTime = dist[i];
+    }
+    return maxTime;
+}
+
+int main() {
+    int timesSize = 3;
+    int timesColSize[] = {3, 3, 3};
+    int* times[3];
+    int t1[] = {2, 1, 1};
+    int t2[] = {2, 3, 1};
+    int t3[] = {3, 4, 1};
+    times[0] = t1;
+    times[1] = t2;
+    times[2] = t3;
+    int n = 4, k = 2;
+    printf("%d\n", networkDelayTime(times, timesSize, timesColSize, n, k));
+    return 0;
+}
