@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#define MAX_SIZE 500
+
+int countTuples(int A[], int B[], int C[], int D[], int sizeA, int sizeB, int sizeC, int sizeD) {
+    int AB[MAX_SIZE], CD[MAX_SIZE];
+    int countAB = 0, countCD = 0;
+    int result = 0;
+
+    // Calculate all possible sums of A[i] + B[j]
+    for (int i = 0; i < sizeA; i++) {
+        for (int j = 0; j < sizeB; j++) {
+            AB[countAB++] = A[i] + B[j];
+        }
+    }
+
+    // Calculate all possible sums of C[k] + D[l]
+    for (int k = 0; k < sizeC; k++) {
+        for (int l = 0; l < sizeD; l++) {
+            CD[countCD++] = C[k] + D[l];
+        }
+    }
+
+    // Sort arrays AB and CD
+    qsort(AB, countAB, sizeof(int), (__compar_fn_t)compare);
+    qsort(CD, countCD, sizeof(int), (__compar_fn_t)compare);
+
+    // Count tuples that sum to zero
+    int i = 0, j = countCD - 1;
+    while (i < countAB && j >= 0) {
+        int sum = AB[i] + CD[j];
+        if (sum == 0) {
+            int countABVal = 1, countCDVal = 1;
+            while (i + 1 < countAB && AB[i] == AB[i + 1]) {
+                i++;
+                countABVal++;
+            }
+            while (j - 1 >= 0 && CD[j] == CD[j - 1]) {
+                j--;
+                countCDVal++;
+            }
+            result += countABVal * countCDVal;
+            i++;
+            j--;
+        } else if (sum < 0) {
+            i++;
+        } else {
+            j--;
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    int A1[] = {1, 2};
+    int B1[] = {-2, -1};
+    int C1[] = {-1, 2};
+    int D1[] = {0, 2};
+    int A2[] = {0};
+    int B2[] = {0};
+    int C2[] = {0};
+    int D2[] = {0};
+
+    int sizeA1 = sizeof(A1) / sizeof(A1[0]);
+    int sizeB1 = sizeof(B1) / sizeof(B1[0]);
+    int sizeC1 = sizeof(C1) / sizeof(C1[0]);
+    int sizeD1 = sizeof(D1) / sizeof(D1[0]);
+    int sizeA2 = sizeof(A2) / sizeof(A2[0]);
+    int sizeB2 = sizeof(B2) / sizeof(B2[0]);
+    int sizeC2 = sizeof(C2) / sizeof(C2[0]);
+    int sizeD2 = sizeof(D2) / sizeof(D2[0]);
+
+    printf("Number of tuples for first case: %d\n", countTuples(A1, B1, C1, D1, sizeA1, sizeB1, sizeC1, sizeD1));
+    printf("Number of tuples for second case: %d\n", countTuples(A2, B2, C2, D2, sizeA2, sizeB2, sizeC2, sizeD2));
+
+    return 0;
+}
