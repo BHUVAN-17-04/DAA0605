@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_VERTICES 100
+
+typedef struct {
+    int u, v;
+} Edge;
+
+void vertexCover(int n, Edge edges[], int m) {
+    int covered[MAX_VERTICES] = {0};
+    int vertex_cover[MAX_VERTICES];
+    int cover_size = 0;
+
+    for (int i = 0; i < m; i++) {
+        if (!covered[edges[i].u] && !covered[edges[i].v]) {
+            vertex_cover[cover_size++] = edges[i].u;
+            vertex_cover[cover_size++] = edges[i].v;
+            covered[edges[i].u] = 1;
+            covered[edges[i].v] = 1;
+        }
+    }
+
+    printf("Vertex Cover: ");
+    for (int i = 0; i < cover_size; i++) {
+        printf("%d ", vertex_cover[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    Edge edges1[] = {
+        {0, 1}, {0, 2}, {1, 2},
+        {1, 3}, {2, 4}, {3, 4}
+    };
+    vertexCover(5, edges1, 6);
+
+    Edge edges2[] = {
+        {0, 1}, {0, 2}, {1, 2}, {2, 3}
+    };
+    vertexCover(4, edges2, 4);
+
+    return 0;
+}
