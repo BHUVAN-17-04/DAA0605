@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char character;
+    struct Node *left, *right;
+} Node;
+
+Node* createNode(char character) {
+    Node* node = (Node*)malloc(sizeof(Node));
+    node->character = character;
+    node->left = node->right = NULL;
+    return node;
+}
+
+void insertNode(Node* root, char* code, char character) {
+    Node* current = root;
+    while (*code) {
+        if (*code == '0') {
+            if (current->left == NULL) current->left = createNode('\0');
+            current = current->left;
+        } else {
+            if (current->right == NULL) current->right = createNode('\0');
+            current = current->right;
+        }
+        code++;
+    }
+    current->character = character;
+}
+
+void decodeHuffman(Node* root, char* encoded_string) {
+    Node* current = root;
+    while (*encoded_string) {
+        if (*encoded_string == '0') {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
+        if (current->left == NULL && current->right == NULL) {
+            printf("%c", current->character);
+            current = root;
+        }
+        encoded_string++;
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* root1 = createNode('\0');
+    insertNode(root1, "110", 'a');
+    insertNode(root1, "10", 'b');
+    insertNode(root1, "0", 'c');
+    insertNode(root1, "111", 'd');
+    decodeHuffman(root1, "1101100111110");
+
+    Node* root2
