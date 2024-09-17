@@ -1,4 +1,3 @@
-# Closest pair of points using divide and conquer
 
 import math
 
@@ -53,7 +52,6 @@ def closest_pair(points):
     points.sort(key=lambda p: p.x)
     return closest_util(points, len(points))
 
-# Example usage
 points = [Point(0, 0), Point(1, 1), Point(2, 2), Point(3, 3)]
 min_dist, pair = closest_pair(points)
 print(f"The closest pair is: ({pair[0].x}, {pair[0].y}) and ({pair[1].x}, {pair[1].y}) with a distance of {min_dist}")
