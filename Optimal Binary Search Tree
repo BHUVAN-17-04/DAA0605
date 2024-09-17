@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <limits.h>
+
+void optimalBST(int keys[], float freq[], int n) {
+    float cost[n+1][n+1];
+    int root[n+1][n+1];
+    
+    for (int i = 0; i <= n; i++) {
+        cost[i][i] = 0;
+        cost[i][i+1] = freq[i];
+        root[i][i] = i;
+        root[i][i+1] = i;
+    }
+
+    for (int len = 2; len <= n; len++) {
+        for (int i = 0; i <= n - len; i++) {
+            int j = i + len;
+            cost[i][j] = INT_MAX;
+            float totalFreq = 0;
+            for (int k = i; k < j; k++) {
+                totalFreq += freq[k];
+            }
+            for (int r = i; r < j; r++) {
+                float c = (r > i ? cost[i][r] : 0) + (r + 1 < j ? cost[r + 1][j] : 0) + totalFreq;
+                if (c < cost[i][j]) {
+                    cost[i][j] = c;
+                    root[i][j] = r;
+                }
+            }
+        }
+    }
+
+    printf("Cost Table:\n");
+    for (int i = 0; i <= n; i++) {
+        for (int j = i; j <= n; j++) {
+            printf("%6.2f ", cost[i][j]);
+        }
+        printf("\n");
+    }
+
+    printf("Root Table:\n");
+    for (int i = 0; i <= n; i++) {
+        for (int j = i; j <= n; j++) {
+            printf("%d ", root[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int keys[] = {10, 12, 16, 21};
+    float freq[] = {4, 2, 6, 3};
+    int n = sizeof(keys) / sizeof(keys[0]);
+    optimalBST(keys, freq, n);
+    return 0;
+}
