@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void permuteUtil(int* nums, int numsSize, int** result, int* returnSize, int* returnColumnSizes, int* visited, int* permutation, int pos) {
+    if (pos == numsSize) {
+        result[*returnSize] = (int*)malloc(numsSize * sizeof(int));
+        for (int i = 0; i < numsSize; i++) {
+            result[*returnSize][i] = permutation[i];
+        }
+        returnColumnSizes[*returnSize] = numsSize;
+        (*returnSize)++;
+        return;
+    }
+    for (int i = 0; i < numsSize; i++) {
+        if (visited[i]) continue;
+        visited[i] = 1;
+        permutation[pos] = nums[i];
+        permuteUtil(nums, numsSize, result, returnSize, returnColumnSizes, visited, permutation, pos + 1);
+        visited[i] = 0;
+    }
+}
+
+int** permute(int* nums, int numsSize, int* returnSize, int** returnColumnSizes) {
+    int** result = (int**)malloc(720 * sizeof(int*));
+    int* permutation = (int*)malloc(numsSize * sizeof(int));
+    int* visited = (int*)
