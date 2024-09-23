@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 10
+
+void printCostMatrix(double cost[MAX][MAX], int n) {
+    printf("Cost Matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (cost[i][j] == INT_MAX) {
+                printf("INF\t");
+            } else {
+                printf("%.2f\t", cost[i][j]);
+            }
+        }
+        printf("\n");
+    }
+}
+
+void printRootMatrix(int root[MAX][MAX], int n) {
+    printf("Root Matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d\t", root[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void optimalBST(double freq[], int n) {
+    double cost[MAX][MAX] = {0};
+    int root[MAX][MAX] = {0};
+
+    for (int i = 0; i < n; i++) {
+        cost[i][i] = freq[i];
+        root[i][i] = i + 1;
+    }
+
+    for (int len = 2; len <= n; len++) {
+        for (int i = 0; i <= n - len; i++) {
+            int j = i + len - 1;
+            cost[i][j] = INT_MAX;
+
+            for (int r = i; r <= j; r++) {
+                double c = ((r > i) ? cost[i][r - 1] : 0) +
+                           ((r < j) ? cost[r + 1][j] : 0) +
+                           freq[i] + freq[j]; // Adjusted to include frequency sums
+
+                if (c < cost[i][j]) {
+                    cost[i][j] = c;
+                    root[i][j] = r + 1; // Store root position
+                }
+            }
+        }
+    }
+
+    printCostMatrix(cost, n);
+    printRootMatrix(root, n);
+    printf("Optimal Cost: %.2f\n", cost[0][n - 1]);
+}
+
+int main() {
+    double freq[] = {0.1, 0.2, 0.3, 0.4}; // Example frequencies
+    int n = sizeof(freq) / sizeof(freq[0]);
+
+    optimalBST(freq, n);
+
+    return 0;
+}
