@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void sortDescending(int weights[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (weights[j] < weights[j + 1]) {
+                int temp = weights[j];
+                weights[j] = weights[j + 1];
+                weights[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int firstFitDecreasing(int weights[], int n, int capacity) {
+    sortDescending(weights, n);
+    int bins[100] = {0}; // Assuming a maximum of 100 bins
+    int binCount = 0;
+
+    for (int i = 0; i < n; i++) {
+        bool placed = false;
+        for (int j = 0; j < binCount; j++) {
+            if (bins[j] + weights[i] <= capacity) {
+                bins[j] += weights[i];
+                placed = true;
+                break;
+            }
+        }
+        if (!placed) {
+            bins[binCount] = weights[i];
+            binCount++;
+        }
+    }
+    return binCount;
+}
+
+int main() {
+    int weights[] = {4, 8, 1, 4, 2, 1};
+    int capacity = 10;
+    int n = sizeof(weights) / sizeof(weights[0]);
+
+    int binCount = firstFitDecreasing(weights, n, capacity);
+    printf("Number of bins required: %d\n", binCount);
+
+    return 0;
+}
