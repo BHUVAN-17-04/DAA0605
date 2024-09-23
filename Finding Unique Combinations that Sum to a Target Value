@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void findCombinations(int arr[], int n, int target, int start, int currentSum, int currentComb[], int combIndex) {
+    if (currentSum == target) {
+        printf("[ ");
+        for (int i = 0; i < combIndex; i++) {
+            printf("%d ", currentComb[i]);
+        }
+        printf("]\n");
+        return;
+    }
+
+    for (int i = start; i < n; i++) {
+        if (currentSum + arr[i] > target) break;
+
+        // Add to current combination
+        currentComb[combIndex] = arr[i];
+        findCombinations(arr, n, target, i + 1, currentSum + arr[i], currentComb, combIndex + 1);
+    }
+}
+
+void uniqueCombinations(int arr[], int n, int target) {
+    int currentComb[n];
+    qsort(arr, n, sizeof(int), (int(*)(const void*, const void*))compare);
+    findCombinations(arr, n, target, 0, 0, currentComb, 0);
+}
+
+int compare(const int *a, const int *b) {
+    return (*a - *b);
+}
+
+int main() {
+    int arr[] = {10, 1, 2, 7, 6, 1, 5};
+    int target = 8;
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Unique combinations that sum to %d:\n", target);
+    uniqueCombinations(arr, n, target);
+
+    return 0;
+}
