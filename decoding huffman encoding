@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char data;
+    int freq;
+    struct Node *left, *right;
+} Node;
+
+Node* newNode(char data, int freq) {
+    Node* temp = (Node*)malloc(sizeof(Node));
+    temp->data = data;
+    temp->freq = freq;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+void decode(Node *root, const char *s) {
+    Node *current = root;
+    for (int i = 0; i < strlen(s); i++) {
+        current = (s[i] == '0') ? current->left : current->right;
+
+        if (current->left == NULL && current->right == NULL) {
+            printf("%c", current->data);
+            current = root;
+        }
+    }
+    printf("\n");
+}
+
+int main() {
+    // Constructing a simple Huffman tree manually for testing
+    Node* root = newNode('\0', 0);
+    root->left = newNode('a', 5);
+    root->right = newNode('\0', 0);
+    root->right->left = newNode('b', 9);
+    root->right->right = newNode('\0', 0);
+    root->right->right->left = newNode('c', 12);
+    root->right->right->right = newNode('d', 13);
+
+    const char *encoded = "1101100111110";
+    printf("Decoded Message: ");
+    decode(root, encoded);
+
+    return 0;
+}
