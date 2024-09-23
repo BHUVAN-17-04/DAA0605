@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define V 4
+
+int maxCut(int graph[V][V]) {
+    bool set[V] = {false};
+    int cutWeight = 0;
+
+    // Simple greedy method: randomly assign vertices to sets
+    for (int i = 0; i < V; i++) {
+        set[i] = rand() % 2; // Randomly assign to two sets
+    }
+
+    // Calculate cut weight
+    for (int i = 0; i < V; i++) {
+        for (int j = i + 1; j < V; j++) {
+            if (graph[i][j] && set[i] != set[j]) {
+                cutWeight++;
+            }
+        }
+    }
+    return cutWeight;
+}
+
+int main() {
+    int graph[V][V] = {
+        {0, 1, 1, 0},
+        {1, 0, 1, 1},
+        {1, 1, 0, 1},
+        {0, 1, 1, 0}
+    };
+
+    int cutWeight = maxCut(graph);
+    printf("Approximate Maximum Cut Weight: %d\n", cutWeight);
+
+    return 0;
+}
